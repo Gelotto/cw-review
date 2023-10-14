@@ -7,10 +7,13 @@ pub enum ContractError {
   Std(#[from] StdError),
 
   #[error("NotAuthorized: {reason:?}")]
-  NotAuthorized { reason: String },
+  NotAuthorized { reason: Option<String> },
 
   #[error("ValidationError: {reason:?}")]
-  ValidationError { reason: String },
+  ValidationError { reason: Option<String> },
+
+  #[error("NotFound: {reason:?}")]
+  NotFound { reason: Option<String> },
 }
 
 impl From<ContractError> for StdError {

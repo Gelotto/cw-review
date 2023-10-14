@@ -1,9 +1,10 @@
-use crate::error::ContractError;
 use crate::msg::InstantiateMsg;
+use crate::{error::ContractError, models::Review};
 use cosmwasm_std::{Addr, DepsMut, Env, MessageInfo, StdResult, Storage};
-use cw_storage_plus::Item;
+use cw_storage_plus::{Item, Map};
 
 pub const OWNER: Item<Addr> = Item::new("owner");
+pub const REVIEWS: Map<&String, Review> = Map::new("reviews");
 
 /// Initialize contract state data.
 pub fn initialize(

@@ -1,6 +1,9 @@
 use crate::error::ContractError;
 use crate::execute;
-use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg, MigrateMsg};
+use crate::msg::{
+  ExecuteContext, ExecuteMsg, InstantiateMsg, MigrateMsg, QueryContext, QueryMsg, ReviewExecuteMsg,
+  ReviewQueryMsg,
+};
 use crate::query;
 use crate::state;
 use cosmwasm_std::entry_point;
@@ -29,9 +32,10 @@ pub fn execute(
   info: MessageInfo,
   msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
+  let ctx = ExecuteContext { deps, env, info };
   match msg {
-    ExecuteMsg::TransferOwnership { new_owner } => {
-      execute::transfer_ownership(deps, env, info, &new_owner)
+    ExecuteMsg::Reviews(msg) => match msg {
+      ReviewExecuteMsg::Create(args) => execute::reviews::create(ctx, args),
     },
   }
 }
@@ -39,11 +43,14 @@ pub fn execute(
 #[entry_point]
 pub fn query(
   deps: Deps,
-  _env: Env,
+  env: Env,
   msg: QueryMsg,
 ) -> Result<Binary, ContractError> {
+  let ctx = QueryContext { deps, env };
   let result = match msg {
-    QueryMsg::Select { fields, wallet } => to_binary(&query::select(deps, fields, wallet)?),
+    QueryMsg::Reviews(msg) => match msg {
+      ReviewQueryMsg::Get { id } => to_binary(&query::reviews::get(ctx, id)?),
+    },
   }?;
   Ok(result)
 }

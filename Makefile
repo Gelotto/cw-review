@@ -1,7 +1,7 @@
 network 				?= devnet  # network := devnet|mainnet|testnet
 sender 					?= juno16g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y
 build_dir 				?= ./builds
-wasm_filename 			?= cw_contract.wasm
+wasm_filename 			?= cw_review.wasm
 
 # build optimized WASM artifact
 build:
@@ -26,9 +26,3 @@ schemas:
 # Run/start local "devnet" validator docker image	
 devnet:
 	./bin/devnet
-
-transfer-ownership:
-	./client.sh transfer-ownership $(network) $(tag) $(sender)
-
-select:
-	./client.sh query-select $(network) $(tag)
